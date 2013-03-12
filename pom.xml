@@ -32,5 +32,15 @@
   </dependencies>
   <build>
     <finalName>solr-cs</finalName>
+      <plugins>
+<plugin>
+<groupId>org.mortbay.jetty</groupId>
+<artifactId>jetty-maven-plugin</artifactId>
+<version>7.5.1.v20110908</version>
+</plugin>
+</plugins>
+
+
+
   </build>
 </project>
