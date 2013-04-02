@@ -17,6 +17,8 @@ import org.junit.Test;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ITCore0 {
     private SolrServer server;
@@ -30,18 +32,35 @@ public class ITCore0 {
     @Test
     public void testIndexNotEmpty() throws SolrServerException, IOException {
         System.out.println("dfkdposfpsdfjdpsg");
+        System.out.println(new java.io.File( "." ).getCanonicalPath());
         SolrQuery query = new SolrQuery();
         SolrDocumentList list = new SolrDocumentList();
-        CSVParser parser = new CSVParser(new FileReader("faq_extract.csv"));
-        String[][] response =  parser.getAllValues();
-        SolrInputDocument doc = new SolrInputDocument();
+        ArrayList<SolrInputDocument> inpoutList = new ArrayList<SolrInputDocument>();
+        CSVParser parser = new CSVParser(new FileReader("./target/classes/faq_extract.csv"));
+        String[][] inputfile =  parser.getAllValues();
+        System.out.println(inputfile.length);
+        for (int i = 1; i < inputfile.length; i++) {
+            SolrInputDocument doc = new SolrInputDocument();
+            for (int j = 0; j < inputfile[i].length; j++) {
+                doc.addField(inputfile[0][j], inputfile[i][j]);
+            }
+            System.out.println(doc);
+            inpoutList.add(doc);
+            //System.out.println(inputfile[i]);
+
+        }
+        server.add(inpoutList, 0);
+        server.commit();
+      /*  SolrInputDocument doc = new SolrInputDocument();
+        server.
+        doc.*/
 
         query.setQuery("*:*");
         QueryResponse qr = server.query(query);
         SolrDocumentList sdl = qr.getResults();
-        System.out.println(sdl.getNumFound() + "-----------------------------------");
+
         assertNotNull("Results (SolrDocumentList) from Core 0 should not be null.", sdl);
 
-        assertTrue("Core 0 should not be empty.", sdl.getNumFound() == 0);
+        assertTrue("Core 0 should not be empty.", sdl.getNumFound() != 0);
     }
 }
