@@ -10,7 +10,7 @@
 
     <repositories>
         <repository>
-            <id>kkaa-test-repo</id>
+            <id>cloudsense-repo-cloudbees</id>
             <name>test public repository for solr binaries</name>
             <url>https://repository-cloudsense.forge.cloudbees.com/</url>
         </repository>
@@ -32,12 +32,6 @@
             <groupId>org.apache.solr</groupId>
             <artifactId>solr</artifactId>
             <version>${solr.version}</version>
-           <!-- <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-jdk14</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>-->
             <type>war</type>
         </dependency>
         <dependency>
@@ -222,6 +216,27 @@
                         <goals>
                             <goal>verify</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals><goal>copy</goal></goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.github.jsimone</groupId>
+                                    <artifactId>webapp-runner</artifactId>
+                                    <version>7.0.34.0</version>
+                                    <destFileName>webapp-runner.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

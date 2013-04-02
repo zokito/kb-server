@@ -35,7 +35,7 @@ public class ITCore0 {
         System.out.println(new java.io.File( "." ).getCanonicalPath());
         SolrQuery query = new SolrQuery();
         SolrDocumentList list = new SolrDocumentList();
-        ArrayList<SolrInputDocument> inpoutList = new ArrayList<SolrInputDocument>();
+        ArrayList<SolrInputDocument> inputList = new ArrayList<SolrInputDocument>();
         CSVParser parser = new CSVParser(new FileReader("./target/classes/faq_extract.csv"));
         String[][] inputfile =  parser.getAllValues();
         System.out.println(inputfile.length);
@@ -44,12 +44,12 @@ public class ITCore0 {
             for (int j = 0; j < inputfile[i].length; j++) {
                 doc.addField(inputfile[0][j], inputfile[i][j]);
             }
-            System.out.println(doc);
-            inpoutList.add(doc);
+          //  System.out.println(doc);
+            inputList.add(doc);
             //System.out.println(inputfile[i]);
 
         }
-        server.add(inpoutList, 0);
+        server.add(inputList, 0);
         server.commit();
       /*  SolrInputDocument doc = new SolrInputDocument();
         server.
