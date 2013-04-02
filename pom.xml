@@ -24,6 +24,7 @@
         <integration-test.dependencies.dir>${project.build.directory}/integration-test-dependencies</integration-test.dependencies.dir>
         <solr.server.war>solr.war</solr.server.war>
         <solr.server.context>solr</solr.server.context>
+        <solr.home>./target/</solr.home>
     </properties>
 
     <dependencies>
