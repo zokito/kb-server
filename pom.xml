@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>solr-cs</groupId>
-    <artifactId>solr-cs</artifactId>
+    <artifactId>solr</artifactId>
     <packaging>war</packaging>
     <version>0.1-SNAPSHOT</version>
     <name>solr-cs Maven Webapp</name>
@@ -12,7 +12,7 @@
         <repository>
             <id>kkaa-test-repo</id>
             <name>test public repository for solr binaries</name>
-            <url>http://www.kkaagames.com/mvnrepo</url>
+            <url>https://repository-cloudsense.forge.cloudbees.com/</url>
         </repository>
     </repositories>
 
@@ -21,8 +21,7 @@
         <jetty.version>8.1.9.v20130131</jetty.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <integration-test.dependencies.dir>${project.build.directory}/integration-test-dependencies
-        </integration-test.dependencies.dir>
+        <integration-test.dependencies.dir>${project.build.directory}/integration-test-dependencies</integration-test.dependencies.dir>
         <solr.server.war>solr.war</solr.server.war>
         <solr.server.context>solr</solr.server.context>
     </properties>
@@ -32,12 +31,12 @@
             <groupId>org.apache.solr</groupId>
             <artifactId>solr</artifactId>
             <version>${solr.version}</version>
-            <exclusions>
+           <!-- <exclusions>
                 <exclusion>
                     <artifactId>slf4j-jdk14</artifactId>
                     <groupId>org.slf4j</groupId>
                 </exclusion>
-            </exclusions>
+            </exclusions>-->
             <type>war</type>
         </dependency>
         <dependency>
@@ -94,7 +93,7 @@
         </dependency> -->
     </dependencies>
     <build>
-        <finalName>solr-cs</finalName>
+        <finalName>solr</finalName>
         <plugins>
            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -158,7 +157,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin> -->
+            </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.3</version>
@@ -206,7 +205,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>    -->
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.12</version>
@@ -230,28 +229,35 @@
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty.version}</version>
                 <configuration>
-                    <jettyConfig>${basedir}/src/test/resources/jetty-env.xml</jettyConfig>
-                    <war>${integration-test.dependencies.dir}/${solr.server.war}</war>
+                    <!--   <jettyConfig>${basedir}/src/test/resources/jetty-env.xml</jettyConfig>
+                     <war>${integration-test.dependencies.dir}/${solr.server.war}</war>
                     <webAppConfig>
                         <contextPath>/${solr.server.context}</contextPath>
                     </webAppConfig>
-                    <connectors>
+                   <connectors>
                         <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
                             <port>9090</port>
                             <maxIdleTime>60000</maxIdleTime>
                         </connector>
                     </connectors>
                     <stopKey>foo</stopKey>
-                    <stopPort>9999</stopPort>
+                    <stopPort>9999</stopPort>  -->
+                    <webAppConfig>
+                        <contextPath>/${solr.server.context}</contextPath>
+                    </webAppConfig>
+                    <scanIntervalSeconds>10</scanIntervalSeconds>
+                    <stopPort>8005</stopPort>
+                    <stopKey>STOP</stopKey>
                 </configuration>
                 <executions>
                     <execution>
                         <id>start-solr</id>
                         <phase>pre-integration-test</phase>
                         <goals>
-                            <goal>deploy-war</goal>
+                            <goal>run-exploded</goal>
                         </goals>
                         <configuration>
+                            <scanIntervalSeconds>0</scanIntervalSeconds>
                             <daemon>true</daemon>
                         </configuration>
                     </execution>
@@ -264,7 +270,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+      <!--      <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.5</version>
                 <executions>
@@ -308,7 +314,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
         </plugins>
 
 
