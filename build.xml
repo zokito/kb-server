@@ -1,0 +1,22 @@
+<project name="CloudSense KCS build helper script"
+         default="clean"
+         basedir="."
+        >
+    <property file="./profiles/dev/config.properties"/>
+    <target name="clean" description="Clean solr home directory">
+        <!-- Must not fail on error because it fails if directories don't exist.
+             Is there really no better way to do this? -->
+        <delete includeEmptyDirs="true" failonerror="false">
+            <fileset dir="${solr.solr.home}" includes="*"/>
+        </delete>
+        <delete includeEmptyDirs="true" failonerror="false" file="system.properties">
+
+        </delete>
+    </target>
+    <target name="copy-properties" description="copy property file too root of project">
+        <!-- Must not fail on error because it fails if directories don't exist.
+             Is there really no better way to do this? -->
+        <copy failonerror="false" file="./profiles/dev/config.properties" tofile="system.properties">
+        </copy>
+    </target>
+</project>
