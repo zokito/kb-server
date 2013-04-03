@@ -4,13 +4,12 @@
     <groupId>solr-cs</groupId>
     <artifactId>solr</artifactId>
     <packaging>war</packaging>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <name>solr-cs Maven Webapp</name>
-    <url>http://maven.apache.org</url>
-
+    <description>This is a SOLR setup with loading the data and then including it in the package</description>
     <repositories>
         <repository>
-            <id>kkaa-test-repo</id>
+            <id>cs-test-repo</id>
             <name>test public repository for solr binaries</name>
             <url>https://repository-cloudsense.forge.cloudbees.com/</url>
         </repository>
@@ -21,303 +20,154 @@
         <jetty.version>8.1.9.v20130131</jetty.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <integration-test.dependencies.dir>${project.build.directory}/integration-test-dependencies</integration-test.dependencies.dir>
         <solr.server.war>solr.war</solr.server.war>
         <solr.server.context>solr</solr.server.context>
-        <solr.home>./target/</solr.home>
+
     </properties>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <build.profile.id>dev</build.profile.id>
+            </properties>
+        </profile>
+    </profiles>
+
 
     <dependencies>
         <dependency>
             <groupId>org.apache.solr</groupId>
             <artifactId>solr</artifactId>
             <version>${solr.version}</version>
-           <!-- <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-jdk14</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>-->
             <type>war</type>
         </dependency>
-        <dependency>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-test-framework</artifactId>
-            <version>${solr.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-core</artifactId>
-            <version>${solr.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.solr</groupId>
-            <artifactId>solr-dataimporthandler</artifactId>
-            <version>${solr.version}</version>
-          <!--  <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-jdk14</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions> -->
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.9</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty.aggregate</groupId>
-            <artifactId>jetty-all-server</artifactId>
-            <version>${jetty.version}</version>
-            <scope>provided</scope>
-        </dependency>
-  <!--      <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.6.6</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>apache-log4j-extras</artifactId>
-            <version>1.1</version>
-            <scope>runtime</scope>
-        </dependency> -->
     </dependencies>
     <build>
         <finalName>solr</finalName>
+        <filters>
+            <filter>${project.basedir}/profiles/${build.profile.id}/config.properties</filter>
+        </filters>
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+        <!-- Add resources configuration here -->
         <plugins>
-           <!-- <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>adjust-resources-execution-mode</id>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <target>
-                                <chmod file="target/classes/import_data.sh" perm="755"/>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin> -->
             <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.14</version>
-                <executions>
-                    <execution>
-                        <id>default-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-          <!--  <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2-beta-2</version>
-                <executions>
-                    <execution>
-                        <id>make-solr-log4j-war</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/assembly/solr-log4j.xml</descriptor>
-                            </descriptors>
-                            <finalName>solr-${solr.version}</finalName>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>make-dist</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>src/assembly/distribution.xml</descriptor>
-                            </descriptors>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.3</version>
-                <executions>
-                    <execution>
-                        <id>solr-server-dependency</id>
-                        <phase>process-test-resources</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${integration-test.dependencies.dir}/${solr.server.war}</outputDirectory>
-                            <includeArtifactIds>
-                                solr
-                            </includeArtifactIds>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>solr-slf4j</id>
-                        <phase>process-test-resources</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${integration-test.dependencies.dir}/${solr.server.war}/WEB-INF/lib
-                            </outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>exec-maven-plugin</artifactId>
                 <groupId>org.codehaus.mojo</groupId>
-                <version>1.2.1</version>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <configuration>
+                    <files>
+                        <!-- Properties are read from profile specific property file -->
+                        <file>${project.basedir}/profiles/${build.profile.id}/config.properties</file>
+                    </files>
+                </configuration>
                 <executions>
+                    <!-- Load properties for the default lifecycle -->
                     <execution>
-                        <id>launch-import</id>
-                        <phase>pre-integration-test</phase>
+                        <id>default-lifecycle-properties</id>
+                        <phase>initialize</phase>
                         <goals>
-                            <goal>exec</goal>
+                            <goal>read-project-properties</goal>
                         </goals>
-                        <configuration>
-                            <executable>${project.build.directory}/classes/import_data.sh</executable>
-                            <workingDirectory>${project.build.directory}/classes</workingDirectory>
-                        </configuration>
+                    </execution>
+                    <!-- Load properties for the clean lifecycle -->
+                    <execution>
+                        <id>clean-lifecycle-properties</id>
+                        <phase>pre-clean</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
                     </execution>
                 </executions>
-            </plugin>    -->
+            </plugin>
             <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.12</version>
+                <groupId>com.github.goldin</groupId>
+                <artifactId>copy-maven-plugin</artifactId>
+                <version>0.2.5</version>
                 <executions>
+                    <!-- Copy Solr configuration file when compile phase is executed -->
                     <execution>
-                        <id>integration-test</id>
+                        <id>copy-solr-config</id>
+                        <phase>compile</phase>
                         <goals>
-                            <goal>integration-test</goal>
+                            <goal>copy</goal>
                         </goals>
-                    </execution>
-                    <execution>
-                        <id>verify</id>
-                        <goals>
-                            <goal>verify</goal>
-                        </goals>
+                        <configuration>
+                            <resources>
+                                <!--
+                                    Copies solr.xml to correct directory and applies properties
+                                    filtering to it.
+                                -->
+                                <resource>
+                                    <directory>${project.basedir}/src/main/resources</directory>
+                                    <filtering>true</filtering>
+                                    <targetPath>${solr.solr.home}</targetPath>
+                                    <includes>
+                                        <include>solr.xml</include>
+                                    </includes>
+                                </resource>
+                                <!-- Copies configuration files -->
+                                <resource>
+                                    <directory>${project.basedir}/src/main/config</directory>
+                                    <targetPath>${solr.solr.home}/${solr.default.core.directory}/conf</targetPath>
+                                    <excludes>
+                                        <exclude>lang</exclude>
+                                        <exclude>velocity</exclude>
+                                        <exclude>xslt</exclude>
+                                    </excludes>
+                                </resource>
+                                <!-- Copies language specific configuration files -->
+                                <resource>
+                                    <directory>${project.basedir}/src/main/config/lang</directory>
+                                    <targetPath>${solr.solr.home}/${solr.default.core.directory}/conf/lang</targetPath>
+                                </resource>
+                                <!-- Copy Velocity macros and other files -->
+                                <resource>
+                                    <directory>${project.basedir}/src/main/config/velocity</directory>
+                                    <targetPath>${solr.solr.home}/${solr.default.core.directory}/conf/velocity
+                                    </targetPath>
+                                </resource>
+                                <!-- Copy XSL style sheets -->
+                                <resource>
+                                    <directory>${project.basedir}/src/main/config/xslt</directory>
+                                    <targetPath>${solr.solr.home}/${solr.default.core.directory}/conf/xslt</targetPath>
+                                </resource>
+                            </resources>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
                 <groupId>org.mortbay.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>${jetty.version}</version>
+                <version>8.1.9.v20130131</version>
                 <configuration>
-                    <!--   <jettyConfig>${basedir}/src/test/resources/jetty-env.xml</jettyConfig>
-                     <war>${integration-test.dependencies.dir}/${solr.server.war}</war>
-                    <webAppConfig>
-                        <contextPath>/${solr.server.context}</contextPath>
-                    </webAppConfig>
-                   <connectors>
+                    <!--Need empty war tag so contextHandlers are loaded with Solr on proper path-->
+                    <war></war>
+                    <stopPort>9966</stopPort>
+                    <stopKey>stop</stopKey>
+                    <connectors>
+                        <!-- Listen to port 8983 -->
                         <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                            <port>9090</port>
+                            <port>8983</port>
                             <maxIdleTime>60000</maxIdleTime>
                         </connector>
                     </connectors>
-                    <stopKey>foo</stopKey>
-                    <stopPort>9999</stopPort>  -->
-                    <webAppConfig>
-                        <contextPath>/${solr.server.context}</contextPath>
-                    </webAppConfig>
-                    <scanIntervalSeconds>10</scanIntervalSeconds>
-                    <stopPort>8005</stopPort>
-                    <stopKey>STOP</stopKey>
+                    <!-- Read system properties from profile specific configuration file -->
+                    <systemPropertiesFile>${project.basedir}/profiles/${build.profile.id}/config.properties</systemPropertiesFile>
+                    <webApp>
+                        <contextPath>/solr</contextPath>
+                    </webApp>
                 </configuration>
-                <executions>
-                    <execution>
-                        <id>start-solr</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>deploy-war</goal>
-                        </goals>
-                        <configuration>
-                            <scanIntervalSeconds>0</scanIntervalSeconds>
-                            <daemon>true</daemon>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>stop-solr</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
-      <!--      <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.5</version>
-                <executions>
-                    <execution>
-                        <id>copy-config</id>
-                        <phase>process-test-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${integration-test.dependencies.dir}/${solr.server.war}/WEB-INF/classes
-                            </outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/src/main/resources</directory>
-                                    <includes>
-                                        <include>log4j.xml</include>
-                                    </includes>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-project-artifact</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target/classes/lib</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/target</directory>
-                                    <includes>
-                                        <include>${project.artifactId}-${project.version}-lib.jar</include>
-                                    </includes>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin> -->
         </plugins>
-
-
     </build>
 </project>
