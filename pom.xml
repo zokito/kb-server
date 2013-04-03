@@ -22,7 +22,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <solr.server.war>solr.war</solr.server.war>
         <solr.server.context>solr</solr.server.context>
-        <skipITs>true</skipITs>
+        <skipITs>false</skipITs>
     </properties>
 
     <profiles>
