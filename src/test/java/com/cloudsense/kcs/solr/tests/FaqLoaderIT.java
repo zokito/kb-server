@@ -34,7 +34,7 @@ public class FaqLoaderIT
 
     @Before
     public void init() {
-        String url = "http://localhost:8983/solr/";
+        String url = "http://127.0.0.1:8983/solr/";
         server = new HttpSolrServer(url);
     }
 
