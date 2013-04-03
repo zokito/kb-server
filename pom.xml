@@ -137,6 +137,14 @@
                                         <include>solr.xml</include>
                                     </includes>
                                 </resource>
+                                <resource>
+                                    <directory>${project.basedir}/profiles/${build.profile.id}/config.properties</directory>
+                                    <filtering>false</filtering>
+                                    <targetPath>${project.basedir}</targetPath>
+                                    <includes>
+                                        <include>system.properties</include>
+                                    </includes>
+                                </resource>
                                 <!-- Copies configuration files -->
                                 <resource>
                                     <directory>${project.basedir}/src/main/config</directory>
