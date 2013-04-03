@@ -171,6 +171,9 @@
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.12</version>
+                <configuration>
+                    <skipTests>false</skipTests>
+                </configuration>
                 <executions>
                     <execution>
                         <id>integration-test</id>
