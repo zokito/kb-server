@@ -29,10 +29,27 @@
         <profile>
             <id>dev</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
+                <os>
+                    <family>Windows</family>
+                </os>
             </activation>
             <properties>
                 <build.profile.id>dev</build.profile.id>
+                <jetty.port>8983</jetty.port>
+            </properties>
+        </profile>
+        <profile>
+            <id>heroku</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>!env.OS</name>
+                </property>
+            </activation>
+            <properties>
+                <build.profile.id>heroku</build.profile.id>
+                <jetty.port>${env.PORT}</jetty.port>
             </properties>
         </profile>
     </profiles>
@@ -91,6 +108,8 @@
                         <!-- Properties are read from profile specific property file -->
                         <file>${project.basedir}/profiles/${build.profile.id}/config.properties</file>
                     </files>
+                    <outputFile/>
+                    <properties/>
                 </configuration>
                 <executions>
                     <!-- Load properties for the default lifecycle -->
@@ -201,7 +220,7 @@
                     <connectors>
                         <!-- Listen to port 8983 -->
                         <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                            <port>8983</port>
+                            <port>${jetty.port}</port>
                             <maxIdleTime>60000</maxIdleTime>
                         </connector>
                     </connectors>
@@ -225,7 +244,7 @@
                             <scanIntervalSeconds>0</scanIntervalSeconds>
                             <daemon>true</daemon>
                             <stopKey>stop</stopKey>
-                            <stopPort>9999</stopPort>
+                            <stopPort>9966</stopPort>
                         </configuration>
                     </execution>
                     <execution>
@@ -236,7 +255,7 @@
                         </goals>
                         <configuration>
                             <stopKey>stop</stopKey>
-                            <stopPort>9999</stopPort>
+                            <stopPort>9966</stopPort>
                         </configuration>
                     </execution>
                 </executions>
