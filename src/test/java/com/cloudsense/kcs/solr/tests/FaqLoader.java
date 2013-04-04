@@ -29,7 +29,7 @@ import static org.junit.Assert.assertTrue;
  * Time: 12:18
  * To change this template use File | Settings | File Templates.
  */
-public class FaqLoaderTest extends AbstractSolrTestCase {
+public class FaqLoader extends AbstractSolrTestCase {
 
   /*  private SolrServer server;
 
