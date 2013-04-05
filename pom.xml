@@ -74,8 +74,20 @@
             <version>${solr.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-test-framework</artifactId>
+            <version>${solr.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <version>4.9</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit-dep</artifactId>
             <version>4.9</version>
             <scope>test</scope>
         </dependency>
@@ -97,6 +109,12 @@
                 <directory>src/main/resources</directory>
             </resource>
         </resources>
+        <testResources>
+            <testResource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+            </testResource>
+        </testResources>
         <!-- Add resources configuration here -->
         <plugins>
             <plugin>
@@ -137,12 +155,13 @@
                 <executions>
                     <!-- Copy Solr configuration file when compile phase is executed -->
                     <execution>
-                        <id>copy-solr-config</id>
+                        <id>copy-solr-config-compile</id>
                         <phase>compile</phase>
                         <goals>
                             <goal>copy</goal>
                         </goals>
                         <configuration>
+                            <verbose>false</verbose>
                             <resources>
                                 <!--
                                     Copies solr.xml to correct directory and applies properties
@@ -154,6 +173,14 @@
                                     <targetPath>${solr.solr.home}</targetPath>
                                     <includes>
                                         <include>solr.xml</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>${project.basedir}/profiles/${build.profile.id}</directory>
+                                    <filtering>true</filtering>
+                                    <targetPath>${project.build.outputDirectory}</targetPath>
+                                    <includes>
+                                        <include>config.properties</include>
                                     </includes>
                                 </resource>
                                 <!-- Copies configuration files -->
@@ -181,6 +208,64 @@
                                 <resource>
                                     <directory>${project.basedir}/src/main/config/xslt</directory>
                                     <targetPath>${solr.solr.home}/${solr.default.core.directory}/conf/xslt</targetPath>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-solr-config-test</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <verbose>false</verbose>
+                            <resources>
+                                <!--
+                                    Copies solr.xml to correct directory and applies properties
+                                    filtering to it.
+                                -->
+                                <resource>
+                                    <directory>${project.basedir}/src/main/resources</directory>
+                                    <filtering>true</filtering>
+                                    <targetPath>${solr.solr.home}</targetPath>
+                                    <includes>
+                                        <include>solr.xml</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>${project.basedir}/profiles/${build.profile.id}</directory>
+                                    <filtering>true</filtering>
+                                    <targetPath>${project.build.testOutputDirectory}</targetPath>
+                                    <includes>
+                                        <include>config.properties</include>
+                                    </includes>
+                                </resource>
+                                <!-- Copies configuration files -->
+                                <resource>
+                                    <directory>${project.basedir}/src/main/config</directory>
+                                    <targetPath>${project.build.testOutputDirectory}/${solr.solr.home}/${solr.default.core.directory}/conf</targetPath>
+                                    <excludes>
+                                        <exclude>lang</exclude>
+                                        <exclude>velocity</exclude>
+                                        <exclude>xslt</exclude>
+                                    </excludes>
+                                </resource>
+                                <!-- Copies language specific configuration files -->
+                                <resource>
+                                    <directory>${project.basedir}/src/main/config/lang</directory>
+                                    <targetPath>${project.build.testOutputDirectory}/${solr.solr.home}/${solr.default.core.directory}/conf/lang</targetPath>
+                                </resource>
+                                <!-- Copy Velocity macros and other files -->
+                                <resource>
+                                    <directory>${project.basedir}/src/main/config/velocity</directory>
+                                    <targetPath>${project.build.testOutputDirectory}/${solr.solr.home}/${solr.default.core.directory}/conf/velocity
+                                    </targetPath>
+                                </resource>
+                                <!-- Copy XSL style sheets -->
+                                <resource>
+                                    <directory>${project.basedir}/src/main/config/xslt</directory>
+                                    <targetPath>${project.build.testOutputDirectory}/${solr.solr.home}/${solr.default.core.directory}/conf/xslt</targetPath>
                                 </resource>
                             </resources>
                         </configuration>

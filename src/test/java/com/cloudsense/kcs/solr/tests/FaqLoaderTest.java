@@ -40,8 +40,11 @@ public class FaqLoaderTest extends AbstractSolrTestCase {
     @Before
     @Override
     public void setUp() throws Exception {
+        System.out.println("------------");
         super.setUp();
+        System.out.println("-----------------------------------------------"+getSolrProperties().getProperty("solr.solr.home")+"--------------------------------");
         SolrTestCaseJ4.initCore("solr.xml","schema.xml", getSolrProperties().getProperty("solr.solr.home"),getSolrProperties().getProperty("solr.default.core.name"));
+        SolrTestCaseJ4.createCore();
         //h = new TestHarness( //TestHarness.createConfig(getSolrProperties().getProperty("solr.solr.home"), getSolrProperties().getProperty("solr.solr.home"))
         server = new EmbeddedSolrServer(h.getCoreContainer(), h.getCore().getName());
     }
@@ -69,17 +72,18 @@ public class FaqLoaderTest extends AbstractSolrTestCase {
     }
 
     public Properties getSolrProperties() {
-        if(solrProperties == null)
+        solrProperties =  new Properties();
+        /*if(solrProperties == null)
         {
             solrProperties =  new Properties();
             try {
                 //load a properties file from class path, inside static method
-                solrProperties.load(FaqLoaderTest.class.getClassLoader().getResourceAsStream("config.properties"));
+                solrProperties.load(getClass().getResourceAsStream("config.properties"));
             }
             catch (IOException ex) {
                 ex.printStackTrace();
             }
-        }
+        } */
         return solrProperties;
     }
 }
