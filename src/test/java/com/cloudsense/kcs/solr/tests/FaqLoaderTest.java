@@ -1,22 +1,20 @@
 package com.cloudsense.kcs.solr.tests;
 
+import org.apache.solr.SolrTestCaseJ4;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.client.solrj.response.QueryResponse;
-import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.SolrInputDocument;
 import org.apache.solr.common.params.SolrParams;
-import org.apache.solr.internal.csv.CSVParser;
 import org.apache.solr.util.AbstractSolrTestCase;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Properties;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -29,24 +27,22 @@ import static org.junit.Assert.assertTrue;
  * Time: 12:18
  * To change this template use File | Settings | File Templates.
  */
-public class FaqLoader extends AbstractSolrTestCase {
+public class FaqLoaderTest extends AbstractSolrTestCase {
 
-  /*  private SolrServer server;
-
-    @Override
-    public String getSchemaFile() {
-        return "solr/conf/schema.xml";
-    }
+    private SolrServer server;
+    private Properties solrProperties;
 
     @Override
-    public String getSolrConfigFile() {
-        return "solr/conf/solrconfig.xml";
+    public String getSolrHome() {
+        return getSolrProperties().getProperty("solr.solr.home");
     }
 
     @Before
     @Override
     public void setUp() throws Exception {
         super.setUp();
+        SolrTestCaseJ4.initCore("solr.xml","schema.xml", getSolrProperties().getProperty("solr.solr.home"),getSolrProperties().getProperty("solr.default.core.name"));
+        //h = new TestHarness( //TestHarness.createConfig(getSolrProperties().getProperty("solr.solr.home"), getSolrProperties().getProperty("solr.solr.home"))
         server = new EmbeddedSolrServer(h.getCoreContainer(), h.getCore().getName());
     }
 
@@ -70,5 +66,20 @@ public class FaqLoader extends AbstractSolrTestCase {
         QueryResponse response = server.query(params);
         assertEquals(1L, response.getResults().getNumFound());
         assertEquals("1", response.getResults().get(0).get("id"));
-    }*/
+    }
+
+    public Properties getSolrProperties() {
+        if(solrProperties == null)
+        {
+            solrProperties =  new Properties();
+            try {
+                //load a properties file from class path, inside static method
+                solrProperties.load(FaqLoaderTest.class.getClassLoader().getResourceAsStream("config.properties"));
+            }
+            catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return solrProperties;
+    }
 }
